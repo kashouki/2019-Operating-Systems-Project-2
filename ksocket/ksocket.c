@@ -56,9 +56,9 @@ ksocket_t ksocket(int domain, int type, int protocol)
 	int ret = 0;
 	
 	ret = sock_create(domain, type, protocol, &sk);
-	if (ret < 0)
-	{
-		printk(KERN_INFO "sock_create failed\n");
+	if (ret == -1){
+		
+		printf("Fail to create a socket.");
 		return NULL;
 	}
 
@@ -73,9 +73,8 @@ ksocket_t ksocket(int domain, int type, int protocol)
 	} else {
 		printk(KERN_INFO "sk or sk->sk is NULL\n");
 	}
-	*/
-	
 	printk("sock_create sk= 0x%p\n", sk);
+	*/
 	
 	return sk;
 }
