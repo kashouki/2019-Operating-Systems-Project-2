@@ -103,7 +103,7 @@ static int __init master_init(void){
   int ret;
   file1 = debugfs_create_file("master_debug", 0644, NULL, NULL, &master_fops);
 
-  ret = misc_register(&master_dev)
+  ret = misc_register(&master_dev);
   if( ret < 0){
     printk(KERN_ERR "misc_register fail\n");
     return ret;
@@ -183,7 +183,7 @@ static long master_ioctl(struct file *file,
       tmp = inet_ntoa(&addr_cli.sin_addr);
       printk("connected from : %s %d\n", tmp, ntohs(addr_cli.sin_port));
       kfree(tmp);
-      ret = 0;
+      return 0;
   }
   else if(ioctl_num == master_IOCTL_MMAP){
       ksend(sockfd_cli, file->private_data, ioctl_param, 0);
@@ -193,7 +193,7 @@ static long master_ioctl(struct file *file,
         printk("kclose cli error\n");
         return -1;
       }
-      ret = 0;
+      return 0;
   }
   else{
       pgd = pgd_offset(current->mm, ioctl_param);
@@ -202,7 +202,7 @@ static long master_ioctl(struct file *file,
       ptep = pte_offset_kernel(pmd, ioctl_param);
       pte = *ptep;
       printk("master: %lX\n", pte);
-      ret = 0;
+      return 0;
   }
   return ret;
 }
