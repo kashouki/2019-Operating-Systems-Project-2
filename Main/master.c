@@ -45,8 +45,8 @@ int main(int argc, char* argv[]){
 	}
 
 	/*create socket and connect master device*/
-	if(ioctl(device_fd, 0x12345678) == -1){
-		perror("failed to create socket\n");
+	if(ioctl(device_fd, 0x12345677) == -1){
+		perror("failed to create socket for master\n");
 		return 1;
 	}
 
@@ -83,7 +83,7 @@ int main(int argc, char* argv[]){
 
 	ioctl(device_fd, 6666);
 	/*disconnect*/
-	if(ioctl(device_fd, 0x12345678) == -1){
+	if(ioctl(device_fd, 0x12345679) == -1){
 		perror("failed to disconnect");
 		return 1;
 	}
