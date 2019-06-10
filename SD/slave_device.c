@@ -20,7 +20,6 @@
 #include <linux/mm.h>
 #include <asm/page.h>
 
-
 #ifndef VM_RESERVED
 #define VM_RESERVED   (VM_DONTEXPAND | VM_DONTDUMP)
 #endif
@@ -211,14 +210,17 @@ static int mmap_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
 	get_page(vmf->page);
 	return 0;
 }
+
 void mmap_open(struct vm_area_struct *vma)
 {
 	/* Do nothing */
 }
-void mmap_close(struct vm_area_struct *vma)
-{
-	/* Do nothing */
-}
+
+//void mmap_close(struct vm_area_struct *vma)
+//{
+//	/* Do nothing */
+//}
+
 //static const struct vm_operations_struct my_vm_ops = {
 //	.open = mmap_open,
 //	.close = mmap_close,
