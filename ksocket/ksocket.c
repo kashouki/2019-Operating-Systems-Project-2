@@ -128,10 +128,9 @@ ksocket_t kaccept(ksocket_t socket, struct sockaddr *address, int *address_len)
 
 	printk("family = %d, type = %d, protocol = %d\n",
 					sk->sk->sk_family, sk->type, sk->sk->sk_protocol);
-	//new_sk = sock_alloc();
-	//sock_alloc() is not exported, so i use sock_create() instead
+	
 	ret = sock_create(sk->sk->sk_family, sk->type, sk->sk->sk_protocol, &new_sk);
-	if (ret < 0)
+	if (ret == -1)
 		return NULL;
 	if (!new_sk)
 		return NULL;
@@ -140,14 +139,18 @@ ksocket_t kaccept(ksocket_t socket, struct sockaddr *address, int *address_len)
 	new_sk->ops = sk->ops;
 	
 	ret = sk->ops->accept(sk, new_sk, 0, true);
-	if (ret < 0)
-		goto error_kaccept;
+	if (ret == -1){
+		sock_release(new_sk);
+		return NULL;
+	}
 	
 	if (address)
 	{
 		ret = new_sk->ops->getname(new_sk, address, address_len, 2);
-		if (ret < 0)
-			goto error_kaccept;
+		if (ret == -1){
+			sock_release(new_sk);
+			return NULL;
+		}
 	}
 	
 	return new_sk;
@@ -202,13 +205,8 @@ ssize_t krecv(ksocket_t socket, void *buffer, size_t length, int flags)
 #ifndef KSOCKET_ADDR_SAFE
 	set_fs(old_fs);
 #endif
-	if (ret < 0)
-		goto out_krecv;
-	//ret = msg.msg_iov.iov_len;//?
-	
-out_krecv:
-	return ret;
-
+	if (ret == -1)
+		return ret;
 }
 
 ssize_t ksend(ksocket_t socket, const void *buffer, size_t length, int flags)
@@ -252,7 +250,7 @@ ssize_t ksend(ksocket_t socket, const void *buffer, size_t length, int flags)
 	set_fs(old_fs);
 #endif
 	
-	return len;//len ?
+	return len;
 }
 
 int kshutdown(ksocket_t socket, int how)
