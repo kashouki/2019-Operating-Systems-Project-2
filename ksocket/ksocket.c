@@ -58,10 +58,12 @@ ksocket_t ksocket(int domain, int type, int protocol)
 	ret = sock_create(domain, type, protocol, &sk);
 	if (ret == -1){
 		
-		printf("Fail to create a socket.");
-		return NULL;
+		printf("Socket create failed");
+		return -1;//NULL
 	}
-
+	
+	return sk;
+	
 	/*
 	if (sk && sk->sk) {
 		if (sk->sk->sk_data_ready) {
@@ -73,10 +75,9 @@ ksocket_t ksocket(int domain, int type, int protocol)
 	} else {
 		printk(KERN_INFO "sk or sk->sk is NULL\n");
 	}
-	printk("sock_create sk= 0x%p\n", sk);
 	*/
 	
-	return sk;
+	//printk("sock_create sk= 0x%p\n", sk);
 }
 
 int kbind(ksocket_t socket, struct sockaddr *address, int address_len)
@@ -86,7 +87,7 @@ int kbind(ksocket_t socket, struct sockaddr *address, int address_len)
 
 	sk = (struct socket *)socket;
 	ret = sk->ops->bind(sk, address, address_len);
-	printk("kbind ret = %d\n", ret);
+	//printk("kbind ret = %d\n", ret);
 	
 	return ret;
 }
