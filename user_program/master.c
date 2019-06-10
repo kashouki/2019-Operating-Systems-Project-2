@@ -27,7 +27,7 @@ int main(int argc, char* argv[]){
 	int file_fd;
 	struct timeval tv; struct timeval tz;
 	size_t file_size = 0;
-	if((device_fd = open("master_device", O_RDWR)) < 0){
+	if((device_fd = open("/dev/master_device", O_RDWR)) < 0){
 		perror("failed to open master_device\n");
 		return 1;
 	}
@@ -79,13 +79,14 @@ int main(int argc, char* argv[]){
 		}
 	}
 
-	ioctl(device_fd, 6666);
 	/*disconnect*/
 	if(ioctl(device_fd, 0x12345679) == -1){
 		perror("failed to disconnect");
 		return 1;
 	}
-	gettimeofday(&tz, NULL);/*time end*/
+	
+	/*time end*/
+	gettimeofday(&tz, NULL);
 
 	/*time calculation*/
 	double transmission_time;
