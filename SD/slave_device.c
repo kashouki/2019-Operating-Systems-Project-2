@@ -29,11 +29,8 @@
 #define slave_IOCTL_MMAP 0x12345678
 #define slave_IOCTL_EXIT 0x12345679
 
-
 #define BUF_SIZE 512
 #define MAP_SIZE PAGE_SIZE * 100 //myyyyyyyyyyyyyyyyy
-
-
 
 struct dentry  *file1;//debug file
 
@@ -58,9 +55,6 @@ int receive_msg(struct file *filp, char *buf, size_t count, loff_t *offp );
 static mm_segment_t old_fs;
 static ksocket_t sockfd_cli;//socket to the master server
 static struct sockaddr_in addr_srv; //address of the master server
-
-
-
 
 //file operations
 static struct file_operations slave_fops = {
@@ -113,6 +107,7 @@ int slave_open(struct inode *inode, struct file *filp)
 	filp->private_data = kmalloc(MAP_SIZE, GFP_KERNEL);
 	return 0;
 }
+
 static long slave_ioctl(struct file *file, unsigned int ioctl_num, unsigned long ioctl_param)
 {
 	long ret = -EINVAL;
@@ -130,7 +125,6 @@ static long slave_ioctl(struct file *file, unsigned int ioctl_num, unsigned long
     pte_t *ptep, pte;
 	old_fs = get_fs();
 	set_fs(KERNEL_DS);
-
 
 	switch(ioctl_num){
 		case slave_IOCTL_CREATESOCK:// create socket and connect to master
@@ -245,7 +239,6 @@ void mmap_close(struct vm_area_struct *vma)
 }//
 */
 ///////////////////////////
-
 
 module_init(slave_init);
 module_exit(slave_exit);
