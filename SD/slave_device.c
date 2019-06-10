@@ -225,25 +225,24 @@ void mmap_close(struct vm_area_struct *vma)
 {
 	/* Do nothing */
 }
-static const struct vm_operations_struct my_vm_ops = {
-	.open = mmap_open,
-	.close = mmap_close,
-	.fault = mmap_fault
-};
+//static const struct vm_operations_struct my_vm_ops = {
+//	.open = mmap_open,
+//	.close = mmap_close,
+//	.fault = mmap_fault
+};//
 
-static int my_mmap(struct file *file, struct vm_area_struct *vma)
-{
-	io_remap_pfn_range(vma,
-		vma->vm_start,
-		virt_to_phys(file->private_data) >> PAGE_SHIFT,
-		vma->vm_end - vma->vm_start,
-		vma->vm_page_prot);
-	vma->vm_ops = &my_vm_ops;
-	vma->vm_flags |= VM_RESERVED;
-	vma->vm_private_data = file->private_data;
-	mmap_open(vma);
-	return 0;
-}
+//static int my_mmap(struct file *file, struct vm_area_struct *vma)
+{//
+////	io_remap_pfn_range(vma,		vma->vm_start,
+//		virt_to_phys(file->private_data) >> PAGE_SHIFT,
+//		vma->vm_end - vma->vm_start,
+//		vma->vm_page_prot);
+//	vma->vm_ops = &my_vm_ops;
+//	vma->vm_flags |= VM_RESERVED;
+//	vma->vm_private_data = file->private_data;
+//	mmap_open(vma);
+//	return 0;
+}//
 */
 ///////////////////////////
 
