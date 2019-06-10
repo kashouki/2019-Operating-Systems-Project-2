@@ -19,22 +19,16 @@
 #include <linux/debugfs.h>
 #include <linux/mm.h>
 #include <asm/page.h>
-
 #ifndef VM_RESERVED
 #define VM_RESERVED   (VM_DONTEXPAND | VM_DONTDUMP)
 #endif
-
 #define slave_IOCTL_CREATESOCK 0x12345677
 #define slave_IOCTL_MMAP 0x12345678
 #define slave_IOCTL_EXIT 0x12345679
-
 #define BUF_SIZE 512
 #define MAP_SIZE PAGE_SIZE * 100 //myyyyyyyyyyyyyyyyy
-
 struct dentry  *file1;//debug file
-
 typedef struct socket * ksocket_t;
-
 //functions about kscoket are exported,and thus we use extern here
 extern ksocket_t ksocket(int domain, int type, int protocol);
 extern int kconnect(ksocket_t socket, struct sockaddr *address, int address_len);
