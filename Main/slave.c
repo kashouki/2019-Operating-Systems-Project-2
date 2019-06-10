@@ -15,12 +15,12 @@
 
 int main(int argc, char* argv[]){
 	/*command*/
-	char file[50];     /*argv[1]*/
-	char function[50]; /*argv[2]*/
+	char file_name[50];     /*argv[1]*/
+	char function_name[50]; /*argv[2]*/
 	char ip[50];       /*argv[3]*/
 
-	strcpy(file, argv[1]);
-	strcpy(function, argv[2]);
+	strcpy(file_name, argv[1]);
+	strcpy(function_name, argv[2]);
 	strcpy(ip, argv[3]);
 	/*-------*/
 	/*open file*/
@@ -56,15 +56,14 @@ int main(int argc, char* argv[]){
 	char *file_addr;
 
 	/*fcntl*/
-	if(functions[0] == "f"){
+	if(function_name[0] == 'f'){
 		do{
-			ret = read(device_fd, buffer, sizeof(buf));
+			ret = read(device_fd, buffer, sizeof(buffer));
 			write(file_fd, buffer, ret);
 			file_size += ret;
 		}while(ret > 0);
-		break;
 	}/*mmap*/
-	else if(functions[0] == "m"){
+	else if(function_name[0] == 'm'){
 		while(1){
 			ret = ioctl(device_fd, 0x12345678);
 			if(ret == 0){
@@ -77,7 +76,6 @@ int main(int argc, char* argv[]){
 			memcpy(file_addr, kernel_addr, ret);
 			offset += ret;
 		}
-		break;
 	}
 	ioctl(device_fd, 6666);
 	/*disconnect*/
@@ -90,7 +88,7 @@ int main(int argc, char* argv[]){
 	/*time calculation*/
 	double transmission_time;
 	transmission_time = (tz.tv_sec - tv.tv_sec)*1000 + (tz.tv_usec - tv.tv_usec)*0.0001;
-	printf("Transmission time: %lf ms, File size: %d bytes\n", transmission_time, file_size / 8);
+	printf("Transmission time: %lf ms, File size: %zu bytes\n", transmission_time, file_size / 8);
 
 	/*close fd*/
 	close(file_fd);
