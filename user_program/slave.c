@@ -75,6 +75,14 @@ int main(int argc, char* argv[]){
 			file_addr = mmap(NULL, ret, PROT_WRITE, MAP_SHARED, file_fd, offset);
 			memcpy(file_addr, kernel_addr, ret);
 			offset += ret;
+      //
+      int count;
+      for(count = 0; PAGE_SIZE * count < ret; count++){
+        ioctl(device_fd, 0, file_addr+PAGE_SIZE*count);
+      }
+      munmap(file_addr, ret);
+      munmap(kernel_addr, ret);
+      //
 		}
 	}
   ioctl(device_fd, 7122);
