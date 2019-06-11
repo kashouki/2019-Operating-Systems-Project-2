@@ -7,13 +7,13 @@ The master device then will listen to distinct port and then, the kernel will pr
 
 ## The Result
 
-![62455131_2112094595761988_6432115161036750848_n](https://user-images.githubusercontent.com/31887135/59286839-0e5c5200-8ca3-11e9-80d2-c8b0f454bbce.png)
-![64274920_430527401012861_5288177460997783552_n](https://user-images.githubusercontent.com/31887135/59286842-10beac00-8ca3-11e9-99ec-416f41daf429.png)
+![62455131_2112094595761988_6432115161036750848_n](https://user-images.githubusercontent.com/31887135/59286839-0e5c5200-8ca3-11e9-80d2-c8b0f454bbce.png)(The outputs for memory-mapped I/O)
+![64274920_430527401012861_5288177460997783552_n](https://user-images.githubusercontent.com/31887135/59286842-10beac00-8ca3-11e9-99ec-416f41daf429.png)(The outputs for file I/O)
 
 
 ## The comparison the performance between file I/O and memory-mapped I/O, and explain why.
 
-
+File I/O should have a better performance over memory-mapped I/O because it uses two separate address spaces for memory and I/O device. However, from what we see in our results, they have similar results. File I/O is better than memory-mapped I/O in only some cases.
 
 ## Work list of team members
 
