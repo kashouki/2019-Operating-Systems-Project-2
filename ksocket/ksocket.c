@@ -59,7 +59,7 @@ ksocket_t ksocket(int domain, int type, int protocol)
 	if (ret == -1){
 		
 		printk("Socket create failed");
-		return -1;
+		return NULL;
 	}
 	
 	return sk;
