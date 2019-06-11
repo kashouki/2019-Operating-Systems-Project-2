@@ -69,7 +69,7 @@ void mmap_close(struct vm_area_struct *vma)
 static const struct vm_operations_struct my_vm_ops = {
 	.open = mmap_open,
 	.close = mmap_close,
-	.fault = mmap_fault
+	//.fault = mmap_fault
 };
 
 static int my_mmap(struct file *file, struct vm_area_struct *vma)
@@ -91,7 +91,7 @@ static struct file_operations slave_fops = {
 	.owner = THIS_MODULE,
 	.unlocked_ioctl = slave_ioctl,
 	.open = slave_open,
-	.read = receive_msg,
+	//.read = receive_msg,
 	.release = slave_close,
 		.mmap = my_mmap
 };
