@@ -21,6 +21,9 @@
 #include <asm/pgtable.h>
 #include <asm/highmem.h>
 #include <linux/debugfs.h>
+#ifndef VM_RESERVED
+#define VM_RESERVED  (VM_DONTEXPAND | VM_DONTDUMP)
+#endif
 
 
 typedef struct socket * ksocket_t;
@@ -104,7 +107,7 @@ static int __init master_init(void){
   file1 = debugfs_create_file("master_debug", 0644, NULL, NULL, &master_fops);
 
   ret = misc_register(&master_dev);
-  if( ret < 0){
+  if(ret < 0){
     printk(KERN_ERR "misc_register fail\n");
     return ret;
   }
@@ -136,6 +139,8 @@ static int __init master_init(void){
     return -1;
   }
   else{
+    printk("master_device init OK\n");
+    set_fs(old_fs);
     return 0;
   }
 }
@@ -170,6 +175,8 @@ static long master_ioctl(struct file *file,
   pud_t *pud;
   pmd_t *pmd;
   pte_t *ptep, pte;
+  old_fs = get_fs();
+  set_fs(KERNEL_DS);
   if(ioctl_num == master_IOCTL_CREATESOCK){
       sockfd_cli = kaccept(sockfd_srv, (struct sockaddr *)&addr_cli, &addr_len);
       if(sockfd_cli == NULL){
@@ -183,7 +190,7 @@ static long master_ioctl(struct file *file,
       tmp = inet_ntoa(&addr_cli.sin_addr);
       printk("connected from : %s %d\n", tmp, ntohs(addr_cli.sin_port));
       kfree(tmp);
-      return 0;
+      ret = 0;
   }
   else if(ioctl_num == master_IOCTL_MMAP){
       ksend(sockfd_cli, file->private_data, ioctl_param, 0);
@@ -193,7 +200,7 @@ static long master_ioctl(struct file *file,
         printk("kclose cli error\n");
         return -1;
       }
-      return 0;
+      ret = 0;
   }
   else{
       pgd = pgd_offset(current->mm, ioctl_param);
@@ -202,8 +209,9 @@ static long master_ioctl(struct file *file,
       ptep = pte_offset_kernel(pmd, ioctl_param);
       pte = *ptep;
       printk("master: %lX\n", pte);
-      return 0;
+      ret = 0;
   }
+  set_fs(old_fs);
   return ret;
 }
 static ssize_t send_msg(struct file *file, const char __user *buf, size_t count, loff_t *data){
