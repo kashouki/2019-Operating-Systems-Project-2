@@ -92,7 +92,7 @@ static struct file_operations slave_fops = {
 	.unlocked_ioctl = slave_ioctl,
 	.open = slave_open,
 	.read = receive_msg,
-	.release = slave_close
+	.release = slave_close,
 		.mmap = my_mmap
 };
 
@@ -145,12 +145,14 @@ static long slave_ioctl(struct file *file, unsigned int ioctl_num, unsigned long
 
 	int addr_len ;
 	unsigned int i;
-	size_t len, data_size = 0;
+	//size_t len, data_size = 0;
+  size_t offset = 0, rec_n;
 	char *tmp, ip[20], buf[BUF_SIZE];
 	struct page *p_print;
 	unsigned char *px;
 
     pgd_t *pgd;
+	p4d_t *p4d;
 	pud_t *pud;
 	pmd_t *pmd;
     pte_t *ptep, pte;
@@ -211,7 +213,8 @@ static long slave_ioctl(struct file *file, unsigned int ioctl_num, unsigned long
 			break;
 		default:
             pgd = pgd_offset(current->mm, ioctl_param);
-			pud = pud_offset(pgd, ioctl_param);
+			p4d = p4d_offset(pgd, ioctl_param);
+			pud = pud_offset(p4d, ioctl_param);
 			pmd = pmd_offset(pud, ioctl_param);
 			ptep = pte_offset_kernel(pmd , ioctl_param);
 			pte = *ptep;

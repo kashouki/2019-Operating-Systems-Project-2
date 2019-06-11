@@ -71,7 +71,7 @@ void mmap_close(struct vm_area_struct *vma){ /*do nothing*/ }
 static const struct vm_operations_struct my_vm_ops = {
   .open = mmap_open,
   .close = mmap_close,
-  //.fault = mmap_fault
+  //.fault = mmap_fault,
 };
 
 static int my_mmap(struct file *file, struct vm_area_struct *vma){
