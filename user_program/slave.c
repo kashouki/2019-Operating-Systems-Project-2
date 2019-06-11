@@ -28,7 +28,7 @@ int main(int argc, char* argv[]){
 	int file_fd;
 	struct timeval tv; struct timeval tz;
 
-	if((device_fd = open("/dev/slave_device", O_RDWR)) < 0){
+	if((device_fd = open("/dev/slave_device", O_RDWR | O_CREAT)) < 0){
 		perror("failed to open slave device\n");
 		return 1;
 	}
@@ -71,13 +71,13 @@ int main(int argc, char* argv[]){
 				break;
 			}
 			posix_fallocate(file_fd, offset, ret);
-			file_addr = mmap(NULL, ret, PROT_WRITE, MAP_SHARED, file_fd, offset);
 			kernel_addr = mmap(NULL, ret, PROT_READ, MAP_SHARED, device_fd, offset);
+			file_addr = mmap(NULL, ret, PROT_WRITE, MAP_SHARED, file_fd, offset);
 			memcpy(file_addr, kernel_addr, ret);
 			offset += ret;
 		}
 	}
-
+  ioctl(device_fd, 7122);
 	/*disconnect*/
 	if(ioctl(device_fd, 0x12345679) == -1){
 		perror("failed to disconnect");

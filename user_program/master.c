@@ -27,7 +27,7 @@ int main(int argc, char* argv[]){
 	int file_fd;
 	struct timeval tv; struct timeval tz;
 	size_t file_size = 0;
-	if((device_fd = open("/dev/master_device", O_RDWR)) < 0){
+	if((device_fd = open("/dev/master_device", O_RDWR | O_CREAT)) < 0){
 		perror("failed to open master_device\n");
 		return 1;
 	}
@@ -61,8 +61,8 @@ int main(int argc, char* argv[]){
 	/*fcntl*/
 	if(function_name[0] == 'f'){
 		do{
-			ret = read(device_fd, buffer, sizeof(buffer));
-			write(file_fd, buffer, ret);
+			ret = read(file_fd, buffer, sizeof(buffer));
+			write(device_fd, buffer, ret);
 		}while(ret > 0);
 	}/*mmap*/
 	else if(function_name[0] == 'm'){
@@ -78,7 +78,7 @@ int main(int argc, char* argv[]){
 			ioctl(device_fd, 0x12345678, map_size);
 		}
 	}
-
+  ioctl(device_fd, 7122);
 	/*disconnect*/
 	if(ioctl(device_fd, 0x12345679) == -1){
 		perror("failed to disconnect");
