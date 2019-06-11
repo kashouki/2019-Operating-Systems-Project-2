@@ -48,6 +48,43 @@ int receive_msg(struct file *filp, char *buf, size_t count, loff_t *offp );
 static mm_segment_t old_fs;
 static ksocket_t sockfd_cli;//socket to the master server
 static struct sockaddr_in addr_srv; //address of the master server
+///////////
+static int mmap_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
+{
+	vmf->page = virt_to_page(vma->vm_private_data);
+	get_page(vmf->page);
+	return 0;
+}
+
+void mmap_open(struct vm_area_struct *vma)
+{
+	/* Do nothing */
+}
+
+void mmap_close(struct vm_area_struct *vma)
+{
+	/* Do nothing */
+}
+
+static const struct vm_operations_struct my_vm_ops = {
+	.open = mmap_open,
+	.close = mmap_close,
+	.fault = mmap_fault
+};
+
+static int my_mmap(struct file *file, struct vm_area_struct *vma)
+{
+	io_remap_pfn_range(vma,		vma->vm_start,
+		virt_to_phys(file->private_data) >> PAGE_SHIFT,
+		vma->vm_end - vma->vm_start,
+		vma->vm_page_prot);
+	vma->vm_ops = &my_vm_ops;
+	vma->vm_flags |= VM_RESERVED;
+	vma->vm_private_data = file->private_data;
+	mmap_open(vma);
+	return 0;
+}
+//////////
 
 //file operations
 static struct file_operations slave_fops = {
@@ -56,6 +93,7 @@ static struct file_operations slave_fops = {
 	.open = slave_open,
 	.read = receive_msg,
 	.release = slave_close
+		.mmap = my_mmap
 };
 
 //device info
@@ -196,45 +234,11 @@ int receive_msg(struct file *filp, char *buf, size_t count, loff_t *offp )
 	return len;
 }
 
-/////////////
-/*
-static int mmap_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
-{
-	vmf->page = virt_to_page(vma->vm_private_data);
-	get_page(vmf->page);
-	return 0;
-}
 
-void mmap_open(struct vm_area_struct *vma)
-{
-	/* Do nothing */
-}
 
-//void mmap_close(struct vm_area_struct *vma)
-//{
-//	/* Do nothing */
-//}
 
-//static const struct vm_operations_struct my_vm_ops = {
-//	.open = mmap_open,
-//	.close = mmap_close,
-//	.fault = mmap_fault
-};//
 
-//static int my_mmap(struct file *file, struct vm_area_struct *vma)
-{//
-////	io_remap_pfn_range(vma,		vma->vm_start,
-//		virt_to_phys(file->private_data) >> PAGE_SHIFT,
-//		vma->vm_end - vma->vm_start,
-//		vma->vm_page_prot);
-//	vma->vm_ops = &my_vm_ops;
-//	vma->vm_flags |= VM_RESERVED;
-//	vma->vm_private_data = file->private_data;
-//	mmap_open(vma);
-//	return 0;
-}//
-*/
-///////////////////////////
+
 
 module_init(slave_init);
 module_exit(slave_exit);
