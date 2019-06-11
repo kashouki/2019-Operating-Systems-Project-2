@@ -19,7 +19,7 @@
 #include <asm/uaccess.h>//
 #include <asm/page.h>//
 #include <asm/pgtable.h>//
-#include <asm/highmem.h>//
+//#include <asm/highmem.h>//
 #include <linux/debugfs.h>//
 #ifndef VM_RESERVED
 #define VM_RESERVED  (VM_DONTEXPAND | VM_DONTDUMP)
@@ -71,7 +71,7 @@ void mmap_close(struct vm_area_struct *vma){ /*do nothing*/ }
 static const struct vm_operations_struct my_vm_ops = {
   .open = mmap_open,
   .close = mmap_close,
-  .fault = mmap_fault
+  //.fault = mmap_fault
 };
 
 static int my_mmap(struct file *file, struct vm_area_struct *vma){
@@ -172,6 +172,7 @@ static long master_ioctl(struct file *file,
   long ret = -EINVAL;
   char *tmp;
   pgd_t *pgd;
+  p4d_t *p4d;
   pud_t *pud;
   pmd_t *pmd;
   pte_t *ptep, pte;
@@ -204,7 +205,8 @@ static long master_ioctl(struct file *file,
   }
   else{
       pgd = pgd_offset(current->mm, ioctl_param);
-      pud = pud_offset(pgd, ioctl_param);
+      p4d = p4d_offset(pgd, ioctl_param);
+      pud = pud_offset(p4d, ioctl_param);
       pmd = pmd_offset(pud, ioctl_param);
       ptep = pte_offset_kernel(pmd, ioctl_param);
       pte = *ptep;
