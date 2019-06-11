@@ -13,15 +13,17 @@ The master device then will listen to distinct port and then, the kernel will pr
 ## Work list of team members
 
 * 方喬 b06502060 機械二 
-    *  master device
+    *  Arrange the implementation of master device and write the code
 * 綦家承 b06902078 資工二
-    * report
+    * Write the report.md
+    * Fix major and minor mistake regarding overall performance
 * 陳智豐 b06902088 資工二 
-    * socket
+    * Arrange the implementation of socket and write the code
 * 羅寶瑩 b06902091 資工二 
-    * user program
+    * Arrange the implementation of user program and write the code
 * 林貞 b06902099 資工二
-    * overall
+    * Write the report.md
+    * Supervise overall performance
 * 李芍妍 t07902137 資工一 
-    * slave device
+    * Arrange the implementation of slave device and write the code
 
