@@ -28,7 +28,7 @@ int main(int argc, char* argv[]){
 	int file_fd;
 	struct timeval tv; struct timeval tz;
 
-	if((device_fd = open("/dev/slave_device", O_RDWR | O_CREAT)) < 0){
+	if((device_fd = open("/dev/slave_device", O_RDWR)) < 0){
 		perror("failed to open slave device\n");
 		return 1;
 	}

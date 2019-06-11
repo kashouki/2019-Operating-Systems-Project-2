@@ -27,7 +27,7 @@ int main(int argc, char* argv[]){
 	int file_fd;
 	struct timeval tv; struct timeval tz;
 	size_t file_size = 0;
-	if((device_fd = open("/dev/master_device", O_RDWR | O_CREAT)) < 0){
+	if((device_fd = open("/dev/master_device", O_RDWR)) < 0){
 		perror("failed to open master_device\n");
 		return 1;
 	}
